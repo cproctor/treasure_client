@@ -2,6 +2,7 @@
 
 // All the  elements of the user interface are currently implemented as 
 // Buttons. Some are enabled, others are not. When you create a Button, it will have the following behavior:
+//
 // - Every time there is a `render` event, it will first call
 //   `buttonWillRender()`. This is a good opportunity to update
 //   the button's label or set its enabled status. Then the 

@@ -19,7 +19,6 @@
 //  - **int currentTreasure()**     Returns the current treasure
 //  - **refresh()**                 Fetches the latest from the server. 
 //  - **play(int card)**            Plays the given card and updates with the latest from the server.
-
 class Game {
  TreasureAPI api;
  Player player;

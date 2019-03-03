@@ -20,7 +20,6 @@
 //   - **boolean canResumeGame()**  true when there is any currently playing game.
 //   - **Game resumeAnyGame()**     Gets any currently playing game.
 //   - **refresh()**                Updates the game with the latest from the server. This is useful when playing against another player, to see if they have played yet.
-
 class Player {
   TreasureAPI api;
   String name;
