@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>Button.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>Button.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h2>Button</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>All the  elements of the user interface are currently implemented as 
+Buttons. Some are enabled, others are not. When you create a Button, it will have the following behavior:
+- Every time there is a <code>render</code> event, it will first call
+  <code>buttonWillRender()</code>. This is a good opportunity to update
+  the button's label or set its enabled status. Then the 
+  button will render itself, by default as a rectangle with a 
+  centered label in the middle. If the button is 
+  enabled, it will use <code>renderEnabled()</code>; if not, it will 
+  use <code>renderDisabled()</code>.
+- Every time an enabled Button is clicked, it will send
+  out an event named <code>eventName</code> with value of <code>value</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>We can make lots of different kinds of buttons by keeping this
+basic logic in place, and changing just the parts we want to change. 
+Note that every <code>Button</code> is a <a href="Event.html">View</a>, which means it automatically
+gets registered to be notified of <a href="Event.html">events</a>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">Button</span> <span class="kd">extends</span> <span class="n">View</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p><code>label</code> is the text that will be shown on the button. <code>eventName</code> is the name of the 
+event that will be sent when the button is clicked.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre> <span class="n">String</span> <span class="n">label</span><span class="o">,</span> <span class="n">eventName</span> <span class="o">=</span> <span class="s">&quot;buttonClick&quot;</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p><code>value</code> will also be sent with event when the button is clicked. (We need this so that
+the program can respond appropriately to when cards with different values are clicked.)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre> <span class="kt">int</span> <span class="n">value</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Buttons will render differently when they are enabled, and will only send click events
+when they are enabled.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre> <span class="kt">boolean</span> <span class="n">enabled</span> <span class="o">=</span> <span class="kc">true</span><span class="o">,</span> <span class="n">canFocus</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Finally, each button gets a <a href="Box">Box</a> that will help with tasks like drawing its rectangle and
+figuring out whether it got clicked.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre> <span class="n">Box</span> <span class="n">box</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <h3>Constructor</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>To make a button just provide a label, value, eventName, and Box. The Button stores these values.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre> <span class="n">Button</span><span class="o">(</span><span class="n">String</span> <span class="n">_label</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_value</span><span class="o">,</span> <span class="n">String</span> <span class="n">_eventName</span><span class="o">,</span> <span class="n">Box</span> <span class="n">_box</span><span class="o">)</span> <span class="o">{</span>
+   <span class="n">label</span> <span class="o">=</span> <span class="n">_label</span><span class="o">;</span>
+   <span class="n">value</span> <span class="o">=</span> <span class="n">_value</span><span class="o">;</span>
+   <span class="n">eventName</span> <span class="o">=</span> <span class="n">_eventName</span><span class="o">;</span>
+   <span class="n">box</span> <span class="o">=</span> <span class="n">_box</span><span class="o">;</span>
+ <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <h3>respond(Event e)</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>This is the basic logic that all buttons will use for rendering (so subclasses don't need to re-define it).</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre> <span class="kt">void</span> <span class="nf">respond</span><span class="o">(</span><span class="n">Event</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>If the <a href="Event.html">event</a> name is <code>render</code>, then the Button needs to render. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="k">if</span> <span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;render&quot;</span><span class="o">))</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>First, we call <code>buttonWillRender</code>, which doesn't do anything--but it's an opportunity for 
+subclasses to add needed behavior prior to rendering. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>     <span class="n">buttonWillRender</span><span class="o">();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>If the button is enabled, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>     <span class="k">if</span> <span class="o">(</span><span class="n">enabled</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>If it's a button that can focus and the <a href="GameView.html">GameView</a>'s <code>focusedCard</code> matches this
+button's value, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>       <span class="k">if</span> <span class="o">(</span><span class="n">canFocus</span> <span class="o">&amp;&amp;</span> <span class="n">view</span><span class="o">.</span><span class="na">focusedCard</span> <span class="o">==</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>then call <code>renderFocused</code> (which subclasses might also want to re-define).</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>         <span class="n">renderFocused</span><span class="o">();</span>
+       <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>If it's not a kind of button that focuses, or its value doesn't match <code>view.focusedCard</code>, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>       <span class="k">else</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>then call <code>renderEnabled</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>         <span class="n">renderEnabled</span><span class="o">();</span>
+       <span class="o">}</span>
+     <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Finally, if the button is disabled, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>     <span class="k">else</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>call renderDisabled.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>       <span class="n">renderDisabled</span><span class="o">();</span>
+     <span class="o">}</span>
+   <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>If the <a href="Event.html">event</a> name is <code>mouseClicked</code>, and the button is enabled, and the mouse 
+is currently over the button's [Box(Box.html),
+telling the world that <strong>it</strong> got clicked. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;mouseClicked&quot;</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">enabled</span> <span class="o">&amp;&amp;</span> <span class="n">box</span><span class="o">.</span><span class="na">mouseOver</span><span class="o">())</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>the button needs to tell the <a href="Event.html">dispatcher</a> that <strong>it</strong> got clicked. 
+Again, subclasses can change how the button communicates by providing different values for <code>eventName</code> 
+and <code>value</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>     <span class="n">dispatcher</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="k">new</span> <span class="n">Event</span><span class="o">(</span><span class="n">eventName</span><span class="o">,</span> <span class="n">value</span><span class="o">));</span>
+   <span class="o">}</span>
+ <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <h3>buttonWillRender()</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>As noted above, this is a placeholder. It gets called before rendering, so it's a good opportunity to 
+make any needed updates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre> <span class="kt">void</span> <span class="nf">buttonWillRender</span><span class="o">()</span> <span class="o">{</span> 
+ <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <h2>renderEnabled()</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>This is the default way of rendering enabled buttons: a yellow background with 
+big black text. These styling functions are defined in <a href="styles.html">styles.html</a>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre> <span class="kt">void</span> <span class="nf">renderEnabled</span><span class="o">()</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>This helper just sets the fill color to yellow and a standard thin black outline (stroke).</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="n">yellowFill</span><span class="o">();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>We'll let the <a href="Box.html">Box</a> take care of actually drawing the rectangle. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="n">box</span><span class="o">.</span><span class="na">render</span><span class="o">();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>This helper makes the text big and black.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="n">bigBlackText</span><span class="o">();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>Set textAlign so that the text is centered horizontally and vertically.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="n">textAlign</span><span class="o">(</span><span class="n">CENTER</span><span class="o">,</span> <span class="n">CENTER</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>Finally, show the text. Note that this is easy because <a href="Box.html">Boxes</a> already know their center positions.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="n">text</span><span class="o">(</span><span class="n">label</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">y</span><span class="o">);</span>
+ <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <h2>renderFocused()</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <p>Works follows the same pattern as <code>renderEnabled</code>. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre> <span class="kt">void</span> <span class="nf">renderFocused</span><span class="o">()</span> <span class="o">{</span>
+   <span class="n">brightYellowFill</span><span class="o">();</span>
+   <span class="n">box</span><span class="o">.</span><span class="na">render</span><span class="o">();</span>
+   <span class="n">bigBlackText</span><span class="o">();</span>
+   <span class="n">textAlign</span><span class="o">(</span><span class="n">CENTER</span><span class="o">,</span> <span class="n">CENTER</span><span class="o">);</span>
+   <span class="n">text</span><span class="o">(</span><span class="n">label</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">y</span><span class="o">);</span>
+ <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <h2>renderDisabled()</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <p>Again, follows the same pattern same as <code>renderEnabled</code>. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre> <span class="kt">void</span> <span class="nf">renderDisabled</span><span class="o">()</span> <span class="o">{</span>
+   <span class="n">darkGreyFill</span><span class="o">();</span>
+   <span class="n">box</span><span class="o">.</span><span class="na">render</span><span class="o">();</span>
+   <span class="n">bigGreyText</span><span class="o">();</span>
+   <span class="n">textAlign</span><span class="o">(</span><span class="n">CENTER</span><span class="o">,</span> <span class="n">CENTER</span><span class="o">);</span>
+   <span class="n">text</span><span class="o">(</span><span class="n">label</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">y</span><span class="o">);</span>
+ <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <h1>Button Subclasses</h1>
+<p>Because of the way Button is written, it's quick and easy to make all kinds of buttons.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <h2>PlayerCardButton</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      <p>One PlayerCardButton is used for each card in the player's hand.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">PlayerCardButton</span> <span class="kd">extends</span> <span class="n">Button</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      <h3>Constructor</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <p>We only need to know two things to make a PlayerCardButton: its value and its <a href="Box.html">Box</a>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">PlayerCardButton</span><span class="o">(</span><span class="kt">int</span> <span class="n">_value</span><span class="o">,</span> <span class="n">Box</span> <span class="n">_box</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      <p><code>super</code> refers to the parent class's constructor, which requires four values: 
+label, value, eventName, and box. The label will just be the value (as a string), and 
+<code>eventName</code> will be <code>playerCard</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kd">super</span><span class="o">(</span><span class="n">str</span><span class="o">(</span><span class="n">_value</span><span class="o">),</span> <span class="n">_value</span><span class="o">,</span> <span class="s">&quot;playerCard&quot;</span><span class="o">,</span> <span class="n">_box</span><span class="o">);</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      <h3>buttonWillRender()</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      <p>Before rendering, we need to check whether the card is still in the player's hand, and 
+update the enabled property accordingly. Then <code>render</code> will make sure disabled
+cards have the disabled style, and <code>respond</code> will not create new events when the button is clicked.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">buttonWillRender</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">enabled</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="na">hand</span><span class="o">.</span><span class="na">hasValue</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      <h2>OpponentCardButton</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-44'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-44'>#</a>
+      </div>
+      <p>OpponentCardButton is just like PlayerCardButton, except it doesn't focus, it sends events named
+<code>opponentCard</code> (which are ignored by <a href="GameView.html">GameView</a>), and it has different styling. 
+It also checks <code>game.opponentHand</code> instead of <code>game.hand</code> to see whether it's enabled.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">OpponentCardButton</span> <span class="kd">extends</span> <span class="n">PlayerCardButton</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      <h3>Constructor</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   
+   <span class="n">OpponentCardButton</span><span class="o">(</span><span class="kt">int</span> <span class="n">_value</span><span class="o">,</span> <span class="n">Box</span> <span class="n">_box</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-46'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      <p>We call the PlayerCardButton constructor, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>     <span class="kd">super</span><span class="o">(</span><span class="n">_value</span><span class="o">,</span> <span class="n">_box</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-47'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-47'>#</a>
+      </div>
+      <p>and then update <code>eventName</code> and <code>canFocus</code> as appropriate.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>     <span class="n">eventName</span> <span class="o">=</span> <span class="s">&quot;opponentCard&quot;</span><span class="o">;</span>
+     <span class="n">canFocus</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+   <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      <h3>renderEnabled()</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-49'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-49'>#</a>
+      </div>
+      <p>Only one line is different here--we call <code>greenFill()</code> instead of <code>yellowFill()</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="kt">void</span> <span class="nf">renderEnabled</span><span class="o">()</span> <span class="o">{</span>
+     <span class="n">greenFill</span><span class="o">();</span>
+     <span class="n">box</span><span class="o">.</span><span class="na">render</span><span class="o">();</span>
+     <span class="n">bigBlackText</span><span class="o">();</span>
+     <span class="n">textAlign</span><span class="o">(</span><span class="n">CENTER</span><span class="o">,</span> <span class="n">CENTER</span><span class="o">);</span>
+     <span class="n">text</span><span class="o">(</span><span class="n">label</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">y</span><span class="o">);</span>
+   <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-50'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      <h3>buttonWillRender()</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
+      </div>
+      <p>We want these cards to show what's in the opponent's hand, so we need to update <code>enabled</code> 
+according to <code>game.opponentHand</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   <span class="kt">void</span> <span class="nf">buttonWillRender</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">enabled</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="na">opponentHand</span><span class="o">.</span><span class="na">hasValue</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-52'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-52'>#</a>
+      </div>
+      <h2>DisabledButton</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-53'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-53'>#</a>
+      </div>
+      <p>Here, we add another layer to the class inheritance--there will be many kinds of disabled buttons,
+so we can define the functionality here and have them all inherit from DisabledButton. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">DisabledButton</span> <span class="kd">extends</span> <span class="n">Button</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-54'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-54'>#</a>
+      </div>
+      <h3>Constructor</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-55'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-55'>#</a>
+      </div>
+      <p>All we need to know to create a DisabledButton is where it should go. So we define a constructor
+which only requires a <a href="Box.html">Box</a>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">DisabledButton</span><span class="o">(</span><span class="n">Box</span> <span class="n">_box</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-56'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-56'>#</a>
+      </div>
+      <p>Call the Button constructor with sensible default values. <code>eventName</code> doesn't matter because
+disabled buttons won't be sending any events.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kd">super</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="s">&quot;disabled&quot;</span><span class="o">,</span> <span class="n">_box</span><span class="o">);</span>
+    <span class="n">enabled</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-57'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-57'>#</a>
+      </div>
+      <h2>TreasureButton</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-58'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-58'>#</a>
+      </div>
+      <p>TreasureButton is a DisabledButton which updates its label according to the game's current score. 
+It also has a more elaborate render; it uses the coordinates of its <a href="Box.html">Box</a> to draw a circle.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">TreasureButton</span> <span class="kd">extends</span> <span class="n">DisabledButton</span> <span class="o">{</span>
+  <span class="n">TreasureButton</span><span class="o">(</span><span class="n">Box</span> <span class="n">_box</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">super</span><span class="o">(</span><span class="n">_box</span><span class="o">);</span>
+  <span class="o">}</span>
+  <span class="kt">void</span> <span class="nf">buttonWillRender</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">str</span><span class="o">(</span><span class="n">game</span><span class="o">.</span><span class="na">currentTreasure</span><span class="o">());</span> 
+  <span class="o">}</span>
+  <span class="kt">void</span> <span class="nf">renderDisabled</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">treasureFill</span><span class="o">();</span>
+    <span class="n">ellipse</span><span class="o">(</span><span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">y</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">wt</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">ht</span><span class="o">);</span>
+    <span class="n">hugeBlueText</span><span class="o">();</span>
+    <span class="n">textAlign</span><span class="o">(</span><span class="n">CENTER</span><span class="o">,</span> <span class="n">CENTER</span><span class="o">);</span>
+    <span class="n">text</span><span class="o">(</span><span class="n">label</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">y</span><span class="o">);</span>
+   <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-59'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-59'>#</a>
+      </div>
+      <h2>ScoreButton</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-60'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-60'>#</a>
+      </div>
+      <p>ScoreButton is a DisabledButton which updates its label with the player's name and current score.
+It also uses slightly different styles in <code>renderDisabled()</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">ScoreButton</span> <span class="kd">extends</span> <span class="n">DisabledButton</span> <span class="o">{</span>
+   <span class="n">ScoreButton</span><span class="o">(</span><span class="n">Box</span> <span class="n">_box</span><span class="o">)</span> <span class="o">{</span>
+     <span class="kd">super</span><span class="o">(</span><span class="n">_box</span><span class="o">);</span>
+   <span class="o">}</span>
+   <span class="kt">void</span> <span class="nf">buttonWillRender</span><span class="o">()</span> <span class="o">{</span>
+     <span class="n">label</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="na">player</span><span class="o">.</span><span class="na">name</span> <span class="o">+</span> <span class="s">&quot;: &quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">game</span><span class="o">.</span><span class="na">score</span><span class="o">);</span>
+   <span class="o">}</span>
+   <span class="kt">void</span> <span class="nf">renderDisabled</span><span class="o">()</span> <span class="o">{</span>
+     <span class="n">darkGreyFill</span><span class="o">();</span>
+     <span class="n">box</span><span class="o">.</span><span class="na">render</span><span class="o">();</span>
+     <span class="n">mediumGreyText</span><span class="o">();</span>
+     <span class="n">textAlign</span><span class="o">(</span><span class="n">CENTER</span><span class="o">,</span> <span class="n">CENTER</span><span class="o">);</span>
+     <span class="n">text</span><span class="o">(</span><span class="n">label</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">box</span><span class="o">.</span><span class="na">center</span><span class="o">.</span><span class="na">y</span><span class="o">);</span>
+   <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-61'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-61'>#</a>
+      </div>
+      <h2>OpponentScoreButton</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-62'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-62'>#</a>
+      </div>
+      <p>OpponentScoreButton extends ScoreButton (which extends DisabledButton which extends Button). 
+The only difference is that the label gets set to the opponent's name and the opponent's score.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">OpponentScoreButton</span> <span class="kd">extends</span> <span class="n">ScoreButton</span> <span class="o">{</span>
+   <span class="n">OpponentScoreButton</span><span class="o">(</span><span class="n">Box</span> <span class="n">_box</span><span class="o">)</span> <span class="o">{</span>
+     <span class="kd">super</span><span class="o">(</span><span class="n">_box</span><span class="o">);</span>
+   <span class="o">}</span>
+   <span class="kt">void</span> <span class="nf">buttonWillRender</span><span class="o">()</span> <span class="o">{</span>
+     <span class="n">label</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="na">opponentName</span> <span class="o">+</span> <span class="s">&quot;: &quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">game</span><span class="o">.</span><span class="na">opponentScore</span><span class="o">);</span>
+   <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-63'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-63'>#</a>
+      </div>
+      <h2>RefreshButton</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-64'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-64'>#</a>
+      </div>
+      <p>RefreshButton currently is not used, because the user interface only supports autoplay games where
+the bot plays immediately. If you wrote a multiplayer interface, you might want to add a button the player
+can use to refresh and check if the opponent had already played. All we need to do at the button level is
+set <code>eventName</code> to <code>"refresh"</code>; we could add code to the <a href="GameView.html">GameView</a> <code>respond(Event e)</code> method
+to refresh the game when this event is received.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">RefreshButton</span> <span class="kd">extends</span> <span class="n">Button</span> <span class="o">{</span>
+  <span class="n">RefreshButton</span><span class="o">(</span><span class="n">Box</span> <span class="n">_box</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">super</span><span class="o">(</span><span class="s">&quot;Refresh&quot;</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="s">&quot;refresh&quot;</span><span class="o">,</span> <span class="n">_box</span><span class="o">);</span> 
+  <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-65'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-65'>#</a>
+      </div>
+      <h1>Summary</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-66'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-66'>#</a>
+      </div>
+      <p>This file defined a lot of different user interface elements, but none of them are very complicated. All they
+do is render themselves and respond to user interaction. Most of the work is done in the model and lower layers.
+Hopefully, you can see how you could make other user interface elements, possibly also extending from Button
+or working in a similar manner. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-67'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-67'>#</a>
+      </div>
+      <p>That's it for the View layer; the next layer down is Models. Let's start by looking at <a href="Player.html">Player</a>. 
+Note: I haven't finished writing documentaiton for the rest of the layers yet. It's coming!</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

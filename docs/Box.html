@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>Box.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>Box.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h2>Box</h2>
+<p>A box manages a rectangle of the screen. It knows how to render itself, 
+and knows how to detect whether the mouse is over this area. Many UI 
+elements need these features.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">Box</span> <span class="o">{</span>
+  <span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">wt</span><span class="o">,</span> <span class="n">ht</span><span class="o">;</span>
+  <span class="n">PVector</span> <span class="n">center</span><span class="o">;</span>
+  
+  <span class="n">Box</span><span class="o">(</span><span class="kt">int</span> <span class="n">_x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_y</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_wt</span><span class="o">,</span> <span class="kt">int</span> <span class="n">_ht</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">_x</span><span class="o">;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">_y</span><span class="o">;</span>
+    <span class="n">wt</span> <span class="o">=</span> <span class="n">_wt</span><span class="o">;</span>
+    <span class="n">ht</span> <span class="o">=</span> <span class="n">_ht</span><span class="o">;</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PVector</span><span class="o">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">wt</span><span class="o">/</span><span class="mi">2</span><span class="o">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">ht</span><span class="o">/</span><span class="mi">2</span><span class="o">);</span>
+   <span class="o">}</span>
+   
+  <span class="kt">boolean</span> <span class="nf">mouseOver</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">mouseX</span> <span class="o">&amp;&amp;</span> <span class="n">mouseX</span> <span class="o">&lt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">wt</span> <span class="o">&amp;&amp;</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">mouseY</span> <span class="o">&amp;&amp;</span> <span class="n">mouseY</span> <span class="o">&lt;</span> <span class="n">y</span> <span class="o">+</span> <span class="n">ht</span><span class="o">;</span>
+  <span class="o">}</span>
+ 
+  <span class="kt">void</span> <span class="nf">render</span><span class="o">()</span> <span class="o">{</span>
+   <span class="n">rect</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">wt</span><span class="o">,</span> <span class="n">ht</span><span class="o">);</span> 
+  <span class="o">}</span>
+<span class="o">}</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

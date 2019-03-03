@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>API.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>API.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h2>Layer: API</h2>
+<p>TreasureAPI takes care of talking to the server. Just ask for
+what you want, and you'll get it! Example: </p>
+<pre><code>Player paulo;
+Game game;
+TreasureAPI api = new TreasureAPI();
+paulo = api.newPlayer("Paulo");
+game = api.newAutoplayGame(paulo.pid);
+</code></pre>
+<p>An API (Application Programming Interface) is a specified way 
+of interacting with a piece of software. The main way of interacting
+with the Treasure server is via HTTP requests (for example, using
+a web browser). This is inconvenient, so the API class handles the 
+details and lets the rest of the program just ask for what it wants.
+This class was written to be understandable, but you don't need to read
+any further unless you want to. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">TreasureAPI</span><span class="o">{</span>
+  <span class="n">String</span> <span class="n">base_url</span> <span class="o">=</span> <span class="s">&quot;http://treasure.chrisproctor.net&quot;</span><span class="o">;</span>
+  <span class="n">Logger</span> <span class="n">log</span><span class="o">;</span>
+  
+  <span class="n">TreasureAPI</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Logger</span><span class="o">(</span><span class="n">DEBUG</span><span class="o">,</span> <span class="s">&quot;[API]&quot;</span><span class="o">);</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">&quot;Initialized API&quot;</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="n">TreasureAPI</span><span class="o">(</span><span class="kt">int</span> <span class="n">logLevel</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Logger</span><span class="o">(</span><span class="n">logLevel</span><span class="o">,</span> <span class="s">&quot;[API]&quot;</span><span class="o">);</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">&quot;Initialized API&quot;</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="n">Player</span> <span class="nf">newPlayer</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s">&quot;/players/new/&quot;</span> <span class="o">+</span> <span class="n">name</span><span class="o">;</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Player</span><span class="o">(</span><span class="n">loadJSONObject</span><span class="o">(</span><span class="n">url</span><span class="o">),</span> <span class="k">this</span><span class="o">);</span> 
+  <span class="o">}</span>
+  
+  <span class="n">Player</span> <span class="nf">getPlayer</span><span class="o">(</span><span class="kt">int</span> <span class="n">pid</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Player</span><span class="o">(</span><span class="n">getPlayerJSON</span><span class="o">(</span><span class="n">pid</span><span class="o">),</span> <span class="k">this</span><span class="o">);</span> 
+  <span class="o">}</span>
+  
+  <span class="n">JSONObject</span> <span class="nf">getPlayerJSON</span><span class="o">(</span><span class="kt">int</span> <span class="n">pid</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s">&quot;/players/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">pid</span><span class="o">);</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">loadJSONObject</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="n">Game</span> <span class="nf">newGame</span><span class="o">(</span><span class="kt">int</span> <span class="n">pid</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Player</span> <span class="n">player</span> <span class="o">=</span> <span class="n">getPlayer</span><span class="o">(</span><span class="n">pid</span><span class="o">);</span>
+    <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s">&quot;/players/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">pid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;/games/new&quot;</span><span class="o">;</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Game</span><span class="o">(</span><span class="n">loadJSONObject</span><span class="o">(</span><span class="n">url</span><span class="o">),</span> <span class="n">player</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span> 
+  <span class="o">}</span>
+  
+  <span class="n">Game</span> <span class="nf">newAutoplayGame</span><span class="o">(</span><span class="kt">int</span> <span class="n">pid</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Player</span> <span class="n">player</span> <span class="o">=</span> <span class="n">getPlayer</span><span class="o">(</span><span class="n">pid</span><span class="o">);</span>
+    <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s">&quot;/players/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">pid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;/games/new&quot;</span><span class="o">;</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+    <span class="n">Game</span> <span class="n">g</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Game</span><span class="o">(</span><span class="n">loadJSONObject</span><span class="o">(</span><span class="n">url</span><span class="o">),</span> <span class="n">player</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span> 
+    <span class="n">url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s">&quot;/players/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">pid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;/games/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">g</span><span class="o">.</span><span class="na">gid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;/autoplay&quot;</span><span class="o">;</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Game</span><span class="o">(</span><span class="n">loadJSONObject</span><span class="o">(</span><span class="n">url</span><span class="o">),</span> <span class="n">player</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span> 
+  <span class="o">}</span>
+  
+  <span class="n">Game</span> <span class="nf">joinAnyGame</span><span class="o">(</span><span class="kt">int</span> <span class="n">pid</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Player</span> <span class="n">player</span> <span class="o">=</span> <span class="n">getPlayer</span><span class="o">(</span><span class="n">pid</span><span class="o">);</span>
+    <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s">&quot;/players/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">pid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;/games/join&quot;</span><span class="o">;</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Game</span><span class="o">(</span><span class="n">loadJSONObject</span><span class="o">(</span><span class="n">url</span><span class="o">),</span> <span class="n">player</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span> 
+  <span class="o">}</span>
+  
+  <span class="n">Game</span> <span class="nf">resumeAnyGame</span><span class="o">(</span><span class="kt">int</span> <span class="n">pid</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Player</span> <span class="n">player</span> <span class="o">=</span> <span class="n">getPlayer</span><span class="o">(</span><span class="n">pid</span><span class="o">);</span>
+    <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s">&quot;/players/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">pid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;/games/resume&quot;</span><span class="o">;</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Game</span><span class="o">(</span><span class="n">loadJSONObject</span><span class="o">(</span><span class="n">url</span><span class="o">),</span> <span class="n">player</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span> 
+  <span class="o">}</span>
+  
+  <span class="n">Game</span> <span class="nf">joinGame</span><span class="o">(</span><span class="kt">int</span> <span class="n">pid</span><span class="o">,</span> <span class="kt">int</span> <span class="n">gid</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Player</span> <span class="n">player</span> <span class="o">=</span> <span class="n">getPlayer</span><span class="o">(</span><span class="n">pid</span><span class="o">);</span>
+    <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s">&quot;/players/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">pid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;/games/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">gid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;/join&quot;</span><span class="o">;</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Game</span><span class="o">(</span><span class="n">loadJSONObject</span><span class="o">(</span><span class="n">url</span><span class="o">),</span> <span class="n">player</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span> 
+  <span class="o">}</span>
+  
+  <span class="n">Game</span> <span class="nf">getGame</span><span class="o">(</span><span class="kt">int</span> <span class="n">pid</span><span class="o">,</span> <span class="kt">int</span> <span class="n">gid</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Player</span> <span class="n">player</span> <span class="o">=</span> <span class="n">getPlayer</span><span class="o">(</span><span class="n">pid</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Game</span><span class="o">(</span><span class="n">getGameJSON</span><span class="o">(</span><span class="n">pid</span><span class="o">,</span> <span class="n">gid</span><span class="o">),</span> <span class="n">player</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span> 
+  <span class="o">}</span>
+  
+  <span class="n">JSONObject</span> <span class="nf">getGameJSON</span><span class="o">(</span><span class="kt">int</span> <span class="n">pid</span><span class="o">,</span> <span class="kt">int</span> <span class="n">gid</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Player</span> <span class="n">player</span> <span class="o">=</span> <span class="n">getPlayer</span><span class="o">(</span><span class="n">pid</span><span class="o">);</span>
+    <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s">&quot;/players/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">pid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;/games/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">gid</span><span class="o">);</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">loadJSONObject</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="n">Game</span> <span class="nf">setGameToAutoplay</span><span class="o">(</span><span class="kt">int</span> <span class="n">pid</span><span class="o">,</span> <span class="kt">int</span> <span class="n">gid</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Player</span> <span class="n">player</span> <span class="o">=</span> <span class="n">getPlayer</span><span class="o">(</span><span class="n">pid</span><span class="o">);</span>
+    <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s">&quot;/players/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">pid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;/games/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">gid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;/autoplay&quot;</span><span class="o">;</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Game</span><span class="o">(</span><span class="n">loadJSONObject</span><span class="o">(</span><span class="n">url</span><span class="o">),</span> <span class="n">player</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span> 
+  <span class="o">}</span>
+  
+  <span class="n">JSONObject</span> <span class="nf">playJSON</span><span class="o">(</span><span class="kt">int</span> <span class="n">pid</span><span class="o">,</span> <span class="kt">int</span> <span class="n">gid</span><span class="o">,</span> <span class="kt">int</span> <span class="n">card</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Player</span> <span class="n">player</span> <span class="o">=</span> <span class="n">getPlayer</span><span class="o">(</span><span class="n">pid</span><span class="o">);</span>
+    <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s">&quot;/players/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">pid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;/games/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">gid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;/play/&quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">card</span><span class="o">);</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">loadJSONObject</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="n">Game</span> <span class="nf">play</span><span class="o">(</span><span class="kt">int</span> <span class="n">pid</span><span class="o">,</span> <span class="kt">int</span> <span class="n">gid</span><span class="o">,</span> <span class="kt">int</span> <span class="n">card</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Game</span><span class="o">(</span><span class="n">playJSON</span><span class="o">(</span><span class="n">pid</span><span class="o">,</span> <span class="n">gid</span><span class="o">,</span> <span class="n">card</span><span class="o">),</span> <span class="n">player</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span> 
+  <span class="o">}</span>
+<span class="o">}</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

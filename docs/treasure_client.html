@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>treasure_client.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>treasure_client.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h1>Treasure Client</h1>
+<p>This code provides an example of an interface for the card game Treasure. This documentation is 
+written in a style called 'literate programming,' where code is written primarily for 
+other humans to read, and secondarily for computers to run. It's as much about communicating
+ideas as it is about making the computer do something. The source code for the program is on the 
+right; comments describing what's going on is on the left. The documentation is written to be read
+in order (at the end of each page, there's a link to the next), but there are lots of links you can follow
+if you're curious. </p>
+<h2>Thinking in layers</h2>
+<p>This project is an example of an important kind of modularity: thinking in layers.
+Each layer takes care of some complexity and exposes a simpler interface to the
+layer above it. The Treasure client has four layers:</p>
+<p><img src="layers.png" width="100%"></p>
+<p>This documentation will guide you from the outside in, but you can skip to any
+layer if you want:</p>
+<ul>
+<li><a href="GameView.html">Views</a></li>
+<li><a href="Player.html">Models</a></li>
+<li><a href="API.html">API</a></li>
+<li><a href="https://github.com/cproctor/treasure">Server</a></li>
+</ul>
+<h2>treasure_client.pde</h2>
+<p>The code in this file is quite simple: it creates the objects we'll need and then kicks 
+off the first render.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>We will create six global objects--that means they're visible to every other part 
+of the program. Creating global variables is usually not good style, but this is a 
+small project and it makes things a bit simpler. Keep in mind, whenever other code
+refers to <code>player</code> or <code>game</code>, it's referring to the objects below.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>The <a href="Logger.html">Logger</a> takes care of reporting messages. It's super useful for debugging, 
+because you can have all the parts of your program report detailed DEBUG messages, 
+and then turn them all off by changing the settings of your Logger. One of the patterns I've 
+learned through hard experience is to always use a logger. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">Logger</span> <span class="n">log</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>The <a href="Dispatcher.html">Dispatcher</a> is responsible for coordinating communication at the View layer.
+Anybody can send the Dispatcher a message, and it will be communicated to all the Views. This is another
+useful design pattern you might consider adopting.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">Dispatcher</span> <span class="n">dispatcher</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>The <a href="Player.html">Player</a> represents a player.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">Player</span> <span class="n">player</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>The <a href="Game.html">Game</a> represents a game. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">Game</span> <span class="n">game</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>The <a href="GameView.html">GameView</a> is the main view for the whole program. It takes care of creating the 
+other views and responds to events they create.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">GameView</span> <span class="n">view</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <h3>setup()</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p><code>setup()</code> runs only once, at the beginning of the program. We need to instantiate objects and assign them 
+to the variables we just created. Then we send a single Event to the dispatcher to get everything started.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kt">void</span> <span class="nf">setup</span><span class="o">()</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>We make a <code>MAIN</code> log, which we can use to leave notes about the top-level state of the program. Currently, 
+it only gets used once. But try adding more log messages!</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">log</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Logger</span><span class="o">(</span><span class="n">INFO</span><span class="o">,</span> <span class="s">&quot;[MAIN]&quot;</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>We create the Player by providing a fixed player ID (<code>pid</code>), so you can only play as Voldemort. Sorry.
+A fancier verison of this game could let the player log in as a different user.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">player</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Player</span><span class="o">(</span><span class="mi">41113</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>We create the dispatcher</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">dispatcher</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Dispatcher</span><span class="o">();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>and a game set to autoplay. This means the bot player will sign up and automatically play a card whenever
+possible. It is much simpler to write an interface that only supports autoplay, because then you don't need
+to wait for another player to join or check to see if she has played.<br />
+(Even if you wanted to write a multiplayer interface, autoplay
+makes it easier to test your work in progress.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">game</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="na">newAutoplayGame</span><span class="o">();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Print a log message, just to maje sure the player loaded properly.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Playing as &quot;</span> <span class="o">+</span> <span class="n">player</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Every Processing sketch needs to set the size of the window. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">size</span><span class="o">(</span><span class="mi">600</span><span class="o">,</span> <span class="mi">400</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Create the <a href="GameView.html">GameView</a>, which will create lots of other views, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">view</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GameView</span><span class="o">();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>and then send a "render" message. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">dispatcher</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="k">new</span> <span class="n">Event</span><span class="o">(</span><span class="s">&quot;render&quot;</span><span class="o">));</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <h3>draw()</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Processing will call the <code>draw()</code> method over and over constantly. We are using a reactive style of programming, 
+where the screen only changes in response to user actions, so we don't need to do anything in <code>draw()</code>. (Turns out
+it's still required, or Processing won't listen for mouse clicks and key presses.)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kt">void</span> <span class="nf">draw</span><span class="o">()</span> <span class="o">{</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <h3>mouseClicked()</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Like <code>setup()</code> and <code>draw()</code>, <code>mouseClicked()</code> is a function that Processing will call at the appropriate time, 
+in this case every time the mouse is clicked. (This is part of the Processing interface.) We are going to use
+<a href="Event.html">Events</a> for communication between different parts of the program, so all we need to do here is 
+create a new <code>mouseClicked</code> event and give it to the dispatcher. Then every part of the program that cares about
+mouse clicks can respond appropriately. Using events, rathen than calling the other parts of the program 
+directly, helps make the code more modular. This part of the program doesn't need to know or care who will
+be responding to events, and nothing here needs to change if we later add new components. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kt">void</span> <span class="nf">mouseClicked</span><span class="o">()</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>Eacn <a href="Event.html">Event</a> has a name and a value. If you don't provide a value, it's set to <code>0</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">Event</span> <span class="n">event</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Event</span><span class="o">(</span><span class="s">&quot;mouseClicked&quot;</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>The dispatcher will take care of telling everyone else about the event.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">dispatcher</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="n">event</span><span class="o">);</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <h3>keyPressed()</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>Similar to mouseClicked, keyPressed is called whenever a key is pressed. We will <strong>bind</strong> keypresses to
+events, meaning we'll send an event whenever certain keys are pressed. This would be easy to extend to 
+detect other keys.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kt">void</span> <span class="nf">keyPressed</span><span class="o">()</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p><code>key</code> is a variable which always stores the most recently pressed key. (See the Processing documentation.)
+Coded keys are those that don't produce symbols like letters or numbers. The Processing documentation
+suggests detecting coded keys by checking whether they're <code>CODED</code> and then checking whether they match
+a certain key. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="k">if</span> <span class="o">(</span><span class="n">key</span> <span class="o">==</span> <span class="n">CODED</span> <span class="o">&amp;&amp;</span> <span class="n">keyCode</span> <span class="o">==</span> <span class="n">LEFT</span><span class="o">)</span> <span class="o">{</span>
+     <span class="n">dispatcher</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="k">new</span> <span class="n">Event</span><span class="o">(</span><span class="s">&quot;focusLeft&quot;</span><span class="o">));</span> 
+  <span class="o">}</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">key</span> <span class="o">==</span> <span class="n">CODED</span> <span class="o">&amp;&amp;</span> <span class="n">keyCode</span> <span class="o">==</span> <span class="n">RIGHT</span><span class="o">)</span> <span class="o">{</span>
+     <span class="n">dispatcher</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="k">new</span> <span class="n">Event</span><span class="o">(</span><span class="s">&quot;focusRight&quot;</span><span class="o">));</span> 
+  <span class="o">}</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">key</span> <span class="o">==</span> <span class="n">CODED</span> <span class="o">&amp;&amp;</span> <span class="n">keyCode</span> <span class="o">==</span> <span class="n">UP</span><span class="o">)</span> <span class="o">{</span>
+     <span class="n">dispatcher</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="k">new</span> <span class="n">Event</span><span class="o">(</span><span class="s">&quot;selectFocused&quot;</span><span class="o">));</span> 
+  <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <h2>Before we go</h2>
+<p>Take a moment to reflect on how little code there was in this file. That's the sign of a well-designed program: 
+like a good manager, you don't have to do very much because you have effectively delegated the work to others.
+Now that we have finished gluing all the parts together, let's consider the first layer, the <a href="GameView.html">Views</a>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -3,11 +3,11 @@
 // TreasureAPI takes care of talking to the server. Just ask for
 // what you want, and you'll get it! Example: 
 // 
-//   Player paulo;
-//   Game game;
-//   TreasureAPI api = new TreasureAPI();
-//   paulo = api.newPlayer("Paulo");
-//   game = api.newAutoplayGame(paulo.pid);
+//     Player paulo;
+//     Game game;
+//     TreasureAPI api = new TreasureAPI();
+//     paulo = api.newPlayer("Paulo");
+//     game = api.newAutoplayGame(paulo.pid);
 //
 // An API (Application Programming Interface) is a specified way 
 // of interacting with a piece of software. The main way of interacting

@@ -1,9 +1,8 @@
-/* Layer: Views
- * ------------
- * A box manages a rectangle of the screen. It knows how to render itself, 
- * and knows how to detect whether the mouse is over this area. Many UI 
- * elements need these features.
- */
+// ## Box
+// 
+// A box manages a rectangle of the screen. It knows how to render itself, 
+// and knows how to detect whether the mouse is over this area. Many UI 
+// elements need these features.
 
 class Box {
   int x, y, wt, ht;

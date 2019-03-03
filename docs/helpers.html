@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>helpers.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>helpers.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>These helper functions assist in turning JSON into Processing objects.
+You don't need to worry about them. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span> <span class="o">*/</span>
+ 
+<span class="n">IntList</span> <span class="nf">json2IntList</span><span class="o">(</span><span class="n">JSONArray</span> <span class="n">json</span><span class="o">)</span> <span class="o">{</span>
+   <span class="k">return</span> <span class="k">new</span> <span class="n">IntList</span><span class="o">(</span><span class="n">json</span><span class="o">.</span><span class="na">getIntArray</span><span class="o">());</span>
+<span class="o">}</span>
+
+
+<span class="n">IntDict</span> <span class="nf">json2IntDict</span><span class="o">(</span><span class="n">JSONObject</span> <span class="n">json</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">IntDict</span> <span class="n">dict</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IntDict</span><span class="o">();</span>
+  <span class="n">StringList</span> <span class="n">keys</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringList</span><span class="o">(</span><span class="n">json</span><span class="o">.</span><span class="na">keys</span><span class="o">());</span>
+  <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">k</span> <span class="o">:</span> <span class="n">keys</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">dict</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">k</span><span class="o">,</span> <span class="n">json</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="n">k</span><span class="o">));</span> 
+  <span class="o">}</span>
+  <span class="k">return</span> <span class="n">dict</span><span class="o">;</span>
+<span class="o">}</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

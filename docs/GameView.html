@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>GameView.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>GameView.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h2>GameView</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>GameView is the first object in the Views layer. Views are responsible for 
+providing the user interface, presenting information on the screen and 
+responding to user actions like key presses and mouse clicks. 
+GameView creates all the other views, and handles <a href="Event.html">events</a> they create. 
+GameView is a subclass of View, which is defined in <a href="Event.html">Event.html</a>. 
+Every View automatically registers itself with the <a href="Event.html">dispatcher</a>, so that the 
+<a href="Event.html">dispatcher</a> can notify it about <a href="Event.html">events</a>. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">GameView</span> <span class="kd">extends</span> <span class="n">View</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>The GameView has a <a href="Logger.html">log</a> so that it can send messages about what's going on.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">Logger</span> <span class="n">log</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>For this interface, it made sense to also keep track of which card is focused. We are only
+going to allow one thing to be focused at a time, so it makes sense to keep track of what's
+focused in a central location rather than having each part of the interface keep track
+of whether it's focused.   </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">int</span> <span class="n">focusedCard</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Now we define a bunch of constants that specify the sizes and positions of all the buttons
+on the screen. It's a <strong>really</strong> good idea to define constants like this, rather than just 
+putting numbers directly into your code. That way, you know where to go to make changes, 
+and you never have mystery code full of numbers whose meaning you might forget.
+Try changing these values to see how they affect the user interface.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">int</span> <span class="n">BOX_SIZE</span> <span class="o">=</span> <span class="mi">40</span><span class="o">,</span> 
+      <span class="n">BOX_MARGIN</span> <span class="o">=</span> <span class="mi">5</span><span class="o">,</span>
+      <span class="n">TREASURE_X</span> <span class="o">=</span> <span class="mi">250</span><span class="o">,</span> 
+      <span class="n">TREASURE_Y</span> <span class="o">=</span> <span class="mi">150</span><span class="o">,</span>
+      <span class="n">TREASURE_SIZE</span> <span class="o">=</span> <span class="mi">100</span><span class="o">,</span>
+      <span class="n">HAND_X</span> <span class="o">=</span> <span class="mi">10</span><span class="o">,</span> 
+      <span class="n">HAND_Y</span> <span class="o">=</span> <span class="mi">350</span><span class="o">,</span> 
+      <span class="n">OPP_HAND_X</span> <span class="o">=</span> <span class="mi">10</span><span class="o">,</span> 
+      <span class="n">OPP_HAND_Y</span> <span class="o">=</span> <span class="mi">10</span><span class="o">,</span>
+      <span class="n">SCORE_WIDTH</span> <span class="o">=</span> <span class="mi">130</span><span class="o">,</span>
+      <span class="n">SCORE_HEIGHT</span> <span class="o">=</span> <span class="mi">30</span><span class="o">,</span>
+      <span class="n">SCORE_X</span> <span class="o">=</span> <span class="mi">460</span><span class="o">,</span>
+      <span class="n">SCORE_Y</span> <span class="o">=</span> <span class="mi">310</span><span class="o">,</span>
+      <span class="n">OPP_SCORE_X</span> <span class="o">=</span> <span class="mi">460</span><span class="o">,</span>
+      <span class="n">OPP_SCORE_Y</span> <span class="o">=</span> <span class="mi">60</span><span class="o">,</span>
+      <span class="n">REFRESH_X</span> <span class="o">=</span> <span class="mi">460</span><span class="o">,</span>
+      <span class="n">REFRESH_Y</span> <span class="o">=</span> <span class="mi">180</span><span class="o">,</span>
+      <span class="n">REFRESH_WIDTH</span> <span class="o">=</span> <span class="mi">130</span><span class="o">,</span>
+      <span class="n">REFRESH_HEIGHT</span> <span class="o">=</span> <span class="mi">40</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <h2>Constructor</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>When a GameView is initialized, it creates all the other user interface elements, 
+which are implemented as <a href="Button.html">buttons</a>. After creating the buttons, GameView
+does not need to keep track of them. If they need to communicate, they'll send <a href="Event.html">events</a> 
+which GameView will respond to. This simplifies the code quite a bit. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="n">GameView</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Logger</span><span class="o">(</span><span class="n">DEBUG</span><span class="o">,</span> <span class="s">&quot;[VIEW]&quot;</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>There's a bit of tedium involved in working with areas of the screen, so we'll use a class
+called <a href="Box.html">Box</a> to take care of that for us. Every Button needs a Box. We will be making
+a lot of buttons, but we can just use one variable, <code>box</code>, to hold whichever Box we're currently 
+working with. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Box</span> <span class="n">box</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>So let's get started adding <a href="Button.html">Buttons</a> to the screen. First, we'll make a Box specifying
+where the treasure button should be, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">box</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Box</span><span class="o">(</span><span class="n">TREASURE_X</span><span class="o">,</span> <span class="n">TREASURE_Y</span><span class="o">,</span> <span class="n">TREASURE_SIZE</span><span class="o">,</span> <span class="n">TREASURE_SIZE</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>then we'll use it to create a <a href="Button.html">TreasureButton</a>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">new</span> <span class="n">TreasureButton</span><span class="o">(</span><span class="n">box</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Make a new Box for the player's score</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">box</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Box</span><span class="o">(</span><span class="n">SCORE_X</span><span class="o">,</span> <span class="n">SCORE_Y</span><span class="o">,</span> <span class="n">SCORE_WIDTH</span><span class="o">,</span> <span class="n">SCORE_HEIGHT</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>and use it to create a <a href="Button.html">ScoreButton</a>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">new</span> <span class="n">ScoreButton</span><span class="o">(</span><span class="n">box</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>And repeat the process to make an <a href="Button.html">OpponentScoreButton</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">box</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Box</span><span class="o">(</span><span class="n">OPP_SCORE_X</span><span class="o">,</span> <span class="n">OPP_SCORE_Y</span><span class="o">,</span> <span class="n">SCORE_WIDTH</span><span class="o">,</span> <span class="n">SCORE_HEIGHT</span><span class="o">);</span>
+    <span class="k">new</span> <span class="n">OpponentScoreButton</span><span class="o">(</span><span class="n">box</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Now for the cards. We need to make a bunch of these, and they follow a predictable pattern, 
+so it makes sense to use a loop. As long as we create card buttons with the right value and
+with a <a href="Box.html">Box</a> with the right coordinates, the buttons can take care of everything
+else on their own. So we create a temporary variable, <code>i</code>, and loop through the same process
+13 times.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">13</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>We set <code>box</code> to have the correct position for the player's card, The vertical y-value
+will always be the same (<code>HAND_Y</code>), but the horizontal x-value will be different for each
+card. <code>HAND_X</code> is the origin point for the hand, and then each card gets shifted over
+an appropriate amount, <code>i</code> times <code>BOX_SIZE + BOX_MARGIN</code>. This is a commonly-used pattern
+for laying out items.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="n">box</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Box</span><span class="o">(</span><span class="n">HAND_X</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="o">(</span><span class="n">BOX_SIZE</span> <span class="o">+</span> <span class="n">BOX_MARGIN</span><span class="o">),</span> <span class="n">HAND_Y</span><span class="o">,</span> <span class="n">BOX_SIZE</span><span class="o">,</span> <span class="n">BOX_SIZE</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Then we create a <a href="Button.html">PlayerCardButton</a>. In CS, <code>0</code> is usually considered the first
+number (and it's important here, because we want the first card to have an x-offset of 0), so 
+each card's value is set to <code>i+1</code> so they range from 1 to 13 instead of from 0 to 12.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="k">new</span> <span class="n">PlayerCardButton</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">,</span> <span class="n">box</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Then re-define the <a href="Box.html">Box</a> for the opponent's hand. We could have done this in a 
+separate loop, but why bother.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="n">box</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Box</span><span class="o">(</span><span class="n">OPP_HAND_X</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="o">(</span><span class="n">BOX_SIZE</span> <span class="o">+</span> <span class="n">BOX_MARGIN</span><span class="o">),</span> <span class="n">OPP_HAND_Y</span><span class="o">,</span> <span class="n">BOX_SIZE</span><span class="o">,</span> <span class="n">BOX_SIZE</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>And create the <a href="Button.html">OpponentCardButton</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="k">new</span> <span class="n">OpponentCardButton</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">,</span> <span class="n">box</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <h3>respond(Event e)</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>Every View must have a <code>respond</code> method, because the <a href="Event.html">dispatcher</a> expects to call it when a new <a href="Event.html">Event</a>
+arrives. However, a default <code>respond</code> method is already defined in <a href="Event.html">View</a>, so if you don't 
+provide one, the default will be used. 
+You can re-define <code>respond</code> to change how the View responds. For GameView, there are
+several different <a href="Event.html">event</a> names that matter. We handle each in a separate case.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">respond</span><span class="o">(</span><span class="n">Event</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p><code>playerCard</code> <a href="Event.html">event</a>s are sent when one of the player's active cards gets clicked. This means 
+that card should be played.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;playerCard&quot;</span><span class="o">))</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>Log it (helpful in debugging)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Playing card &quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">value</span><span class="o">));</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Tell the <a href="Game.html">game</a> to play that card. Note this is the first time we're using an object
+from the <a href="Player.html">Model</a> layer. Interactions between views and modes should be short and 
+sweet, just like this one! If you're reading carefully, you might wonder
+why we don't check whether the card can be played. The program will crash if somebody tries to play
+14 or a card they've already played. It would be safer to check, but we know that only 
+unplayed, legitimate cards will be sending this <a href="Event.html">event</a>, so we're only going to get legitimate
+values. If you were thinking about possibly extending this program in the future, it would 
+definitely be worth checking here, to prevent a future headache. This is called defensive 
+programming. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="n">game</span><span class="o">.</span><span class="na">play</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">value</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>By convention, every view should respond to <code>render</code> <a href="Event.html">events</a> by updating their parts of the screen.
+Every time the <a href="Player.html">player</a> or the <a href="Game.html">game</a> potentially changes, we need to 
+issue a <code>render</code> <a href="Event.html">event</a> to tell the views to update themselves. Why doesn't GameView
+do anything when it receives a <code>render</code> event? Because it's not responsible for any part of the screen; 
+it just coordinates the other Views.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="n">dispatcher</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="k">new</span> <span class="n">Event</span><span class="o">(</span><span class="s">&quot;render&quot;</span><span class="o">));</span>
+    <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>The <code>focusLeft</code> <a href="Event.html">event</a> is sent when the left arrow is pressed.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;focusLeft&quot;</span><span class="o">))</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>We want to respond by moving the focus left. That's not too complicated, but it felt worth
+putting into a separate method (below) to keep this part of the code cleaner.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="n">moveFocusLeft</span><span class="o">();</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>Something changed, so re-render.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="n">dispatcher</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="k">new</span> <span class="n">Event</span><span class="o">(</span><span class="s">&quot;render&quot;</span><span class="o">));</span>
+    <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>The <code>focusRight</code> <a href="Event.html">event</a> is sent when the right arrow is pressed; we follow the same pattern.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;focusRight&quot;</span><span class="o">))</span> <span class="o">{</span>
+      <span class="n">moveFocusRight</span><span class="o">();</span>
+      <span class="n">dispatcher</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="k">new</span> <span class="n">Event</span><span class="o">(</span><span class="s">&quot;render&quot;</span><span class="o">));</span>
+    <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>Finally, the <code>selectFocused</code> <a href="Event.html">event</a> is sent when the up arrow is pressed. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;selectFocused&quot;</span><span class="o">))</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>We want to respond by playing whichever card is focused. In this case, we do need to 
+check whether that card can be played, because sometimes the focusedCard is not a valid play.
+This happens at the beginning of the game (<code>focusedCard</code> is initially set to <code>0</code>), after playing 
+a card (<code>focusedCard</code> retains its value, but the card is no longer playable), and after moving too
+far left or right. Luckily, we can easily use the <a href="Game.html">game</a> model to check whether the player
+has that value in her hand.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="k">if</span> <span class="o">(</span><span class="n">game</span><span class="o">.</span><span class="na">hand</span><span class="o">.</span><span class="na">hasValue</span><span class="o">(</span><span class="n">focusedCard</span><span class="o">))</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>If so, we can play it. Log it, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Playing card &quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">focusedCard</span><span class="o">));</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <p>and tell the <a href="Game.html">game</a> to play <code>focusedCard</code>..</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">game</span><span class="o">.</span><span class="na">play</span><span class="o">(</span><span class="n">focusedCard</span><span class="o">);</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <p>Something changed, so re-render.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">dispatcher</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="k">new</span> <span class="n">Event</span><span class="o">(</span><span class="s">&quot;render&quot;</span><span class="o">));</span>
+      <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>In case <code>focusedCard</code> can't be played, nothing happens. But it's worth logging as a warning, in case
+something goes wrong later.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="k">else</span> <span class="o">{</span>
+        <span class="n">log</span><span class="o">.</span><span class="na">warning</span><span class="o">(</span><span class="s">&quot;Can&#39;t play &quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">focusedCard</span><span class="o">));</span> 
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <h3>moveFocusLeft()</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <p>We're almost finished, just need to define how to move the focus left and right. There are many ways we could
+do this, but here's a simple strategy:</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">moveFocusLeft</span><span class="o">()</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <p>reduce the value of <code>focusedCard</code> by 1. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">focusedCard</span> <span class="o">-=</span> <span class="mi">1</span><span class="o">;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      <p>Then, as long as <code>focusedCard</code> isn't in the player's hand and we're still above <code>0</code>, </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">while</span> <span class="o">(!</span><span class="n">game</span><span class="o">.</span><span class="na">hand</span><span class="o">.</span><span class="na">hasValue</span><span class="o">(</span><span class="n">focusedCard</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">focusedCard</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      <p>keep reducing the value of <code>focusedCard</code>. The intent here is to allow focus to skip over as many
+already-played cards as necessary. If we're already at or below 0, <code>focvusedCard</code> will keep decreasing
+every time the left arrow is pressed, but we don't need to care, because it will zoom back up to the next 
+available card the first time the right arrow is pressed.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>      <span class="n">focusedCard</span> <span class="o">-=</span> <span class="mi">1</span><span class="o">;</span> 
+    <span class="o">}</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <h3>moveFocusRight()</h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      <p>Works exactly the same way as <code>moveFocusLeft</code>, just in reverse.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">moveFocusRight</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">focusedCard</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">;</span>
+    <span class="k">while</span> <span class="o">(!</span><span class="n">game</span><span class="o">.</span><span class="na">hand</span><span class="o">.</span><span class="na">hasValue</span><span class="o">(</span><span class="n">focusedCard</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">focusedCard</span> <span class="o">&lt;</span> <span class="mi">14</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">focusedCard</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">;</span> 
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      <h2>Next up</h2>
+<p>We have now created all the <a href="Button.html">Buttons</a> needed for the user interface, and written code
+to respond to their <a href="Event.html">events</a>. <a href="Button.html">Next, Let's have a look at how those buttons work</a>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

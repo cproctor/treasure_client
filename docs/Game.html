@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>Game.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>Game.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h2>Game</h2>
+<p>A Game represents a game, with the following properties:</p>
+<ul>
+<li><strong>Player player</strong>             the current player</li>
+<li><strong>int gid</strong>                   the game's ID</li>
+<li><strong>int score</strong>                 the player's score</li>
+<li><strong>int opponentScore</strong>         the opponent's score</li>
+<li><strong>String status</strong>             the game's status. Either 'playing', 'waiting for players', 'cancelled', or 'complete'.</li>
+<li><strong>String opponentName</strong>       the opponent's name</li>
+<li><strong>IntList hand</strong>              all the cards in the player's hand</li>
+<li><strong>IntList opponentHand</strong>      all the cards in the opponent's hand</li>
+<li><strong>ArrayList<IntDict> turns</strong>  A list of turns, with the newest first. Each turn lists the card played by a player on that turn. There will definitely be a "treasure" key and there might be one for the player's name. There will not be a key for the opponent until the turn is complete, because you're not allowed to see the opponent's play!</li>
+</ul>
+<p>Game has the following methods:</p>
+<ul>
+<li><strong>boolean playerCanPlay()</strong>   The player can play only if the game's status is 'playing' and she has not yet played this turn.</li>
+<li><strong>IntDict currentTurn()</strong>     Returns the current turn</li>
+<li><strong>int currentTreasure()</strong>     Returns the current treasure</li>
+<li><strong>refresh()</strong>                 Fetches the latest from the server. </li>
+<li><strong>play(int card)</strong>            Plays the given card and updates with the latest from the server.</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">Game</span> <span class="o">{</span>
+ <span class="n">TreasureAPI</span> <span class="n">api</span><span class="o">;</span>
+ <span class="n">Player</span> <span class="n">player</span><span class="o">;</span>
+ <span class="kt">int</span> <span class="n">gid</span><span class="o">,</span> <span class="n">score</span><span class="o">,</span> <span class="n">opponentScore</span><span class="o">;</span>
+ <span class="n">String</span> <span class="n">status</span><span class="o">,</span> <span class="n">opponentName</span><span class="o">;</span>
+ <span class="n">IntList</span> <span class="n">hand</span><span class="o">,</span> <span class="n">opponentHand</span><span class="o">;</span>
+ <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">IntDict</span><span class="o">&gt;</span> <span class="n">turns</span><span class="o">;</span>
+  
+ <span class="n">Game</span><span class="o">(</span><span class="n">JSONObject</span> <span class="n">data</span><span class="o">,</span> <span class="n">Player</span> <span class="n">_player</span><span class="o">,</span> <span class="n">TreasureAPI</span> <span class="n">_api</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">_player</span><span class="o">;</span>
+    <span class="n">api</span> <span class="o">=</span> <span class="n">_api</span><span class="o">;</span>
+    <span class="n">updateFromJSON</span><span class="o">(</span><span class="n">data</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="kt">boolean</span> <span class="nf">playerCanPlay</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(!</span><span class="n">status</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;playing&quot;</span><span class="o">))</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="k">return</span> <span class="o">!</span><span class="n">currentTurn</span><span class="o">().</span><span class="na">hasKey</span><span class="o">(</span><span class="n">player</span><span class="o">.</span><span class="na">name</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="n">IntDict</span> <span class="nf">currentTurn</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">turns</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="kt">int</span> <span class="nf">currentTreasure</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">currentTurn</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;treasure&quot;</span><span class="o">);</span> 
+  <span class="o">}</span>
+  
+  <span class="kt">void</span> <span class="nf">refresh</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">updateFromJSON</span><span class="o">(</span><span class="n">api</span><span class="o">.</span><span class="na">getGameJSON</span><span class="o">(</span><span class="n">player</span><span class="o">.</span><span class="na">pid</span><span class="o">,</span> <span class="n">gid</span><span class="o">));</span> 
+  <span class="o">}</span>
+  
+  <span class="kt">void</span> <span class="nf">play</span><span class="o">(</span><span class="kt">int</span> <span class="n">card</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">updateFromJSON</span><span class="o">(</span><span class="n">api</span><span class="o">.</span><span class="na">playJSON</span><span class="o">(</span><span class="n">player</span><span class="o">.</span><span class="na">pid</span><span class="o">,</span> <span class="n">gid</span><span class="o">,</span> <span class="n">card</span><span class="o">));</span>  
+  <span class="o">}</span>
+  
+  <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">status</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;waiting for players&quot;</span><span class="o">))</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="s">&quot;Game &quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">gid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;: &quot;</span> <span class="o">+</span> <span class="n">player</span><span class="o">.</span><span class="na">name</span> <span class="o">+</span> <span class="s">&quot; is waiting for an opponent.&quot;</span><span class="o">;</span> 
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+       <span class="k">return</span> <span class="s">&quot;Game &quot;</span> <span class="o">+</span> <span class="n">str</span><span class="o">(</span><span class="n">gid</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot; (&quot;</span> <span class="o">+</span> <span class="n">status</span> <span class="o">+</span> <span class="s">&quot;) between &quot;</span> <span class="o">+</span> <span class="n">player</span><span class="o">.</span><span class="na">name</span> <span class="o">+</span> <span class="s">&quot; and &quot;</span> <span class="o">+</span> <span class="n">opponentName</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Reads a blob of JSON data from the server and updates this game's properties.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">updateFromJSON</span><span class="o">(</span><span class="n">JSONObject</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">gid</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">&quot;gid&quot;</span><span class="o">);</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&quot;status&quot;</span><span class="o">);</span>
+    <span class="n">turns</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">IntDict</span><span class="o">&gt;();</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">status</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;waiting for players&quot;</span><span class="o">))</span> <span class="o">{</span>
+      <span class="n">hand</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IntList</span><span class="o">();</span>
+      <span class="n">opponentHand</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IntList</span><span class="o">();</span>
+      <span class="n">score</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+      <span class="n">opponentScore</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+      <span class="n">opponentName</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+      <span class="k">return</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="n">JSONObject</span> <span class="n">playersData</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">getJSONObject</span><span class="o">(</span><span class="s">&quot;players&quot;</span><span class="o">);</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">Object</span> <span class="n">k</span> <span class="o">:</span> <span class="n">playersData</span><span class="o">.</span><span class="na">keys</span><span class="o">())</span> <span class="o">{</span>
+      <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+      <span class="k">if</span> <span class="o">(!</span><span class="n">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">player</span><span class="o">.</span><span class="na">name</span><span class="o">))</span> <span class="n">opponentName</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="n">JSONObject</span> <span class="n">playerData</span> <span class="o">=</span> <span class="n">playersData</span><span class="o">.</span><span class="na">getJSONObject</span><span class="o">(</span><span class="n">player</span><span class="o">.</span><span class="na">name</span><span class="o">);</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">playerData</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">&quot;score&quot;</span><span class="o">);</span>
+    <span class="n">hand</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IntList</span><span class="o">(</span><span class="n">playerData</span><span class="o">.</span><span class="na">getJSONArray</span><span class="o">(</span><span class="s">&quot;hand&quot;</span><span class="o">).</span><span class="na">getIntArray</span><span class="o">());</span>
+    <span class="n">JSONObject</span> <span class="n">opponentData</span> <span class="o">=</span> <span class="n">playersData</span><span class="o">.</span><span class="na">getJSONObject</span><span class="o">(</span><span class="n">opponentName</span><span class="o">);</span>
+    <span class="n">opponentScore</span> <span class="o">=</span> <span class="n">opponentData</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">&quot;score&quot;</span><span class="o">);</span>
+    <span class="n">opponentHand</span> <span class="o">=</span> <span class="n">json2IntList</span><span class="o">(</span><span class="n">opponentData</span><span class="o">.</span><span class="na">getJSONArray</span><span class="o">(</span><span class="s">&quot;hand&quot;</span><span class="o">));</span>
+    <span class="n">JSONArray</span> <span class="n">turnsData</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">getJSONArray</span><span class="o">(</span><span class="s">&quot;turns&quot;</span><span class="o">);</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">turnsData</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+       <span class="n">turns</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">json2IntDict</span><span class="o">(</span><span class="n">turnsData</span><span class="o">.</span><span class="na">getJSONObject</span><span class="o">(</span><span class="n">i</span><span class="o">)));</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

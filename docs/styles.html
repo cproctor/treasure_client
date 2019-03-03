@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>styles.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>styles.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <ul>
+<li>It can be helpful to cluster styling together into functions, so that you don't </li>
+<li>have to repeat them in different parts of your program, and so you can </li>
+<li>change them in one place. </li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span> <span class="o">*/</span>
+
+<span class="kt">void</span> <span class="nf">wireframe</span><span class="o">()</span> <span class="o">{</span>
+ <span class="n">noFill</span><span class="o">();</span>
+ <span class="n">stroke</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+ <span class="n">strokeWeight</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">yellowFill</span><span class="o">()</span> <span class="o">{</span>
+ <span class="n">fill</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span> <span class="mi">200</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+ <span class="n">stroke</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+ <span class="n">strokeWeight</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">brightYellowFill</span><span class="o">()</span> <span class="o">{</span>
+ <span class="n">fill</span><span class="o">(</span><span class="mi">255</span><span class="o">,</span> <span class="mi">255</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+ <span class="n">stroke</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+ <span class="n">strokeWeight</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">treasureFill</span><span class="o">()</span> <span class="o">{</span>
+ <span class="n">fill</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span> <span class="mi">200</span><span class="o">,</span> <span class="mi">255</span><span class="o">);</span>
+ <span class="n">stroke</span><span class="o">(</span><span class="mi">50</span><span class="o">,</span> <span class="mi">50</span><span class="o">,</span> <span class="mi">200</span><span class="o">);</span>
+ <span class="n">strokeWeight</span><span class="o">(</span><span class="mi">4</span><span class="o">);</span>
+<span class="o">}</span>
+
+
+<span class="kt">void</span> <span class="nf">greenFill</span><span class="o">()</span> <span class="o">{</span>
+ <span class="n">fill</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">200</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+ <span class="n">stroke</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+ <span class="n">strokeWeight</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">darkGreyFill</span><span class="o">()</span> <span class="o">{</span>
+ <span class="n">fill</span><span class="o">(</span><span class="mi">50</span><span class="o">);</span>
+ <span class="n">stroke</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+ <span class="n">strokeWeight</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">hugeBlueText</span><span class="o">()</span> <span class="o">{</span>
+ <span class="n">textSize</span><span class="o">(</span><span class="mi">64</span><span class="o">);</span>
+ <span class="n">fill</span><span class="o">(</span><span class="mi">50</span><span class="o">,</span> <span class="mi">50</span><span class="o">,</span> <span class="mi">200</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">bigBlackText</span><span class="o">()</span> <span class="o">{</span>
+ <span class="n">textSize</span><span class="o">(</span><span class="mi">32</span><span class="o">);</span>
+ <span class="n">fill</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">bigGreyText</span><span class="o">()</span> <span class="o">{</span>
+ <span class="n">textSize</span><span class="o">(</span><span class="mi">32</span><span class="o">);</span>
+ <span class="n">fill</span><span class="o">(</span><span class="mi">128</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kt">void</span> <span class="nf">mediumGreyText</span><span class="o">()</span> <span class="o">{</span>
+ <span class="n">textSize</span><span class="o">(</span><span class="mi">18</span><span class="o">);</span>
+ <span class="n">fill</span><span class="o">(</span><span class="mi">128</span><span class="o">);</span>
+<span class="o">}</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

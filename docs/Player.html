@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>Player.pde</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>Player.pde</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h2>Player</h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>A Player represents a person with the following properties:</p>
+<ul>
+<li><strong>int pid</strong>                  the player's ID</li>
+<li><strong>String name</strong>              the player's name</li>
+<li><strong>int wins</strong>                 total number of wins</li>
+<li><strong>int losses</strong>               total number of losses</li>
+<li><strong>IntList gamesWaiting</strong>     list of game IDs for games waiting for other players to join</li>
+<li><strong>IntList gamesPlaying</strong>     list of game IDs currently playing</li>
+<li><strong>IntList gamesCancelled</strong>   list of game IDs for cancelled games (waited too long to start)</li>
+<li><strong>IntList gamesComplete</strong>    list of game IDs for complete games</li>
+</ul>
+<p>Players have the following methods:</p>
+<ul>
+<li><strong>Player(int pid)</strong>          Gets a player by PID (the PID is effectively the player's password)</li>
+<li><strong>Player(String name)</strong>      Creates a new player with the given name</li>
+<li><strong>Game newGame()</strong>           Creates a new Game</li>
+<li><strong>Game newAutoplayGame()</strong>   Creates a new autoplay Game against the bot. </li>
+<li><strong>boolean canResumeGame()</strong>  true when there is any currently playing game.</li>
+<li><strong>Game resumeAnyGame()</strong>     Gets any currently playing game.</li>
+<li><strong>refresh()</strong>                Updates the game with the latest from the server. This is useful when playing against another player, to see if they have played yet.</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kd">class</span> <span class="nc">Player</span> <span class="o">{</span>
+  <span class="n">TreasureAPI</span> <span class="n">api</span><span class="o">;</span>
+  <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+  <span class="kt">int</span> <span class="n">pid</span><span class="o">,</span> <span class="n">wins</span><span class="o">,</span> <span class="n">losses</span><span class="o">;</span>
+  <span class="n">IntList</span> <span class="n">gamesWaiting</span><span class="o">,</span> <span class="n">gamesPlaying</span><span class="o">,</span> <span class="n">gamesCancelled</span><span class="o">,</span> <span class="n">gamesComplete</span><span class="o">;</span>
+  
+  <span class="n">Player</span><span class="o">(</span><span class="n">JSONObject</span> <span class="n">data</span><span class="o">,</span> <span class="n">TreasureAPI</span> <span class="n">_api</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">api</span> <span class="o">=</span> <span class="n">_api</span><span class="o">;</span>
+    <span class="n">updateFromJSON</span><span class="o">(</span><span class="n">data</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="n">Player</span><span class="o">(</span><span class="kt">int</span> <span class="n">_pid</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">api</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TreasureAPI</span><span class="o">();</span>
+    <span class="n">pid</span> <span class="o">=</span> <span class="n">_pid</span><span class="o">;</span>
+    <span class="n">refresh</span><span class="o">();</span>
+  <span class="o">}</span>
+  
+  <span class="n">Player</span><span class="o">(</span><span class="kt">int</span> <span class="n">_pid</span><span class="o">,</span> <span class="n">TreasureAPI</span> <span class="n">_api</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">api</span> <span class="o">=</span> <span class="n">_api</span><span class="o">;</span>
+    <span class="n">pid</span> <span class="o">=</span> <span class="n">_pid</span><span class="o">;</span>
+    <span class="n">refresh</span><span class="o">();</span>
+  <span class="o">}</span>
+  
+  <span class="n">Game</span> <span class="nf">newGame</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="na">newGame</span><span class="o">(</span><span class="n">pid</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="n">Game</span> <span class="nf">newAutoplayGame</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="na">newAutoplayGame</span><span class="o">(</span><span class="n">pid</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="kt">boolean</span> <span class="nf">canResumeGame</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">gamesPlaying</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="o">}</span>
+  
+  <span class="n">Game</span> <span class="nf">resumeAnyGame</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="na">resumeAnyGame</span><span class="o">(</span><span class="n">pid</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="kt">void</span> <span class="nf">refresh</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">updateFromJSON</span><span class="o">(</span><span class="n">api</span><span class="o">.</span><span class="na">getPlayerJSON</span><span class="o">(</span><span class="n">pid</span><span class="o">));</span>
+  <span class="o">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Reads a blob of JSON data from the server and updates this player's properties.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>  <span class="kt">void</span> <span class="nf">updateFromJSON</span><span class="o">(</span><span class="n">JSONObject</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">);</span>
+    <span class="n">pid</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">&quot;pid&quot;</span><span class="o">);</span>
+    <span class="n">JSONObject</span> <span class="n">stats</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">getJSONObject</span><span class="o">(</span><span class="s">&quot;stats&quot;</span><span class="o">);</span>
+    <span class="n">wins</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">&quot;wins&quot;</span><span class="o">);</span>
+    <span class="n">losses</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">&quot;losses&quot;</span><span class="o">);</span>
+    <span class="n">gamesWaiting</span> <span class="o">=</span> <span class="n">json2IntList</span><span class="o">(</span><span class="n">data</span><span class="o">.</span><span class="na">getJSONArray</span><span class="o">(</span><span class="s">&quot;games_waiting&quot;</span><span class="o">));</span>
+    <span class="n">gamesPlaying</span> <span class="o">=</span> <span class="n">json2IntList</span><span class="o">(</span><span class="n">data</span><span class="o">.</span><span class="na">getJSONArray</span><span class="o">(</span><span class="s">&quot;games_playing&quot;</span><span class="o">));</span>
+    <span class="n">gamesCancelled</span> <span class="o">=</span> <span class="n">json2IntList</span><span class="o">(</span><span class="n">data</span><span class="o">.</span><span class="na">getJSONArray</span><span class="o">(</span><span class="s">&quot;games_cancelled&quot;</span><span class="o">));</span>
+    <span class="n">gamesComplete</span> <span class="o">=</span> <span class="n">json2IntList</span><span class="o">(</span><span class="n">data</span><span class="o">.</span><span class="na">getJSONArray</span><span class="o">(</span><span class="s">&quot;games_complete&quot;</span><span class="o">));</span>
+  <span class="o">}</span>
+  
+  <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&quot; (&quot;</span> <span class="o">+</span> <span class="n">pid</span> <span class="o">+</span> <span class="s">&quot;)&quot;</span><span class="o">;</span>
+  <span class="o">}</span>
+  
+<span class="o">}</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

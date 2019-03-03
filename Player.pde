@@ -1,25 +1,25 @@
-/* Level: Models
- * -------------
- * A Player represents a person with the following properties:
- *   - int pid                  the player's ID
- *   - String name              the player's name
- *   - int wins                 total number of wins
- *   - int losses               total number of losses
- *   - IntList gamesWaiting     list of game IDs for games waiting for other players to join
- *   - IntList gamesPlaying     list of game IDs currently playing
- *   - IntList gamesCancelled   list of game IDs for cancelled games (waited too long to start)
- *   - IntList gamesComplete    list of game IDs for complete games
- *
- * Players have the following methods:
- *   - Player(int pid)          Gets a player by PID (the PID is effectively the player's password)
- *   - Player(String name)      Creates a new player with the given name
- *   - Game newGame()           Creates a new Game
- *   - Game newAutoplayGame()   Creates a new autoplay Game against the bot. 
- *   - boolean canResumeGame()  true when there is any currently playing game.
- *   - Game resumeAnyGame()     Gets any currently playing game.
- *   - refresh()                Updates the game with the latest from the server. This is useful 
- *                              when playing against another player, to see if they have played yet.
- */
+// ## Player
+
+// A Player represents a person with the following properties:
+//
+//   - **int pid**                  the player's ID
+//   - **String name**              the player's name
+//   - **int wins**                 total number of wins
+//   - **int losses**               total number of losses
+//   - **IntList gamesWaiting**     list of game IDs for games waiting for other players to join
+//   - **IntList gamesPlaying**     list of game IDs currently playing
+//   - **IntList gamesCancelled**   list of game IDs for cancelled games (waited too long to start)
+//   - **IntList gamesComplete**    list of game IDs for complete games
+//
+// Players have the following methods:
+//
+//   - **Player(int pid)**          Gets a player by PID (the PID is effectively the player's password)
+//   - **Player(String name)**      Creates a new player with the given name
+//   - **Game newGame()**           Creates a new Game
+//   - **Game newAutoplayGame()**   Creates a new autoplay Game against the bot. 
+//   - **boolean canResumeGame()**  true when there is any currently playing game.
+//   - **Game resumeAnyGame()**     Gets any currently playing game.
+//   - **refresh()**                Updates the game with the latest from the server. This is useful when playing against another player, to see if they have played yet.
 
 class Player {
   TreasureAPI api;

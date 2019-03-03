@@ -1,5 +1,5 @@
-// Level: API (and others) 
-// -----------------------
+// ## Logger
+// 
 // Loggers can be added to objects to allow them to communicate in a 
 // manageable way. Loggers are initialized with a log level and a prefix. 
 // The logger will ignore messages below its level (ex: an INFO logger

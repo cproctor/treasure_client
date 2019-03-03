@@ -1,29 +1,24 @@
-/* Layer: Models
- * -------------
- * A Game represents a game, with the following properties:
- *  - Player player             the current player
- *  - int gid                   the game's ID
- *  - int score                 the player's score
- *  - int opponentScore         the opponent's score
- *  - String status             the game's status. Either 'playing', 'waiting for players', 
- *                              'cancelled', or 'complete'.
- *  - String opponentName       the opponent's name
- *  - IntList hand              all the cards in the player's hand
- *  - IntList opponentHand      all the cards in the opponent's hand
- *  - ArrayList<IntDict> turns  A list of turns, with the newest first. Each turn lists the card
- *                              played by a player on that turn. There will definitely be a 
- *                              "treasure" key and there might be one for the player's name.
- *                              There will not be a key for the opponent until the turn is 
- *                              complete, because you're not allowed to see the opponent's play!
- * 
- * Game has the following methods:
- *  - boolean playerCanPlay()   The player can play only if the game's status is 'playing' and 
- *                              she has not yet played this turn.
- *  - IntDict currentTurn()     Returns the current turn
- *  - int currentTreasure()     Returns the current treasure
- *  - refresh()                 Fetches the latest from the server. 
- *  - play(int card)            Plays the given card and updates with the latest from the server.
- */
+// ## Game
+// 
+// A Game represents a game, with the following properties:
+//
+//  - **Player player**             the current player
+//  - **int gid**                   the game's ID
+//  - **int score**                 the player's score
+//  - **int opponentScore**         the opponent's score
+//  - **String status**             the game's status. Either 'playing', 'waiting for players', 'cancelled', or 'complete'.
+//  - **String opponentName**       the opponent's name
+//  - **IntList hand**              all the cards in the player's hand
+//  - **IntList opponentHand**      all the cards in the opponent's hand
+//  - **ArrayList<IntDict> turns**  A list of turns, with the newest first. Each turn lists the card played by a player on that turn. There will definitely be a "treasure" key and there might be one for the player's name. There will not be a key for the opponent until the turn is complete, because you're not allowed to see the opponent's play!
+// 
+// Game has the following methods:
+//
+//  - **boolean playerCanPlay()**   The player can play only if the game's status is 'playing' and she has not yet played this turn.
+//  - **IntDict currentTurn()**     Returns the current turn
+//  - **int currentTreasure()**     Returns the current treasure
+//  - **refresh()**                 Fetches the latest from the server. 
+//  - **play(int card)**            Plays the given card and updates with the latest from the server.
 
 class Game {
  TreasureAPI api;
