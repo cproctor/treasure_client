@@ -1,13 +1,11 @@
-/* Layer: Views
- * ------------
- * Three classes are defined here: Dispatcher, View, and Event. 
- * There will be one dispatcher for the whole program, responsible for 
- * coordination. Every part of the user interface should inherit from 
- * View; Views register themselves with the dispatcher so that they get
- * notified of events. Each View has a respond() method, which 
- * is called whenever there is an event. 
- */
+// Three classes are defined here: Dispatcher, View, and Event. 
+// There will be one dispatcher for the whole program, responsible for 
+// coordination. Every part of the user interface should inherit from 
+// View; Views register themselves with the dispatcher so that they get
+// notified of events. Each View has a `respond()` method, which 
+// is called whenever there is an event.
 
+// ## Dispatcher
 class Dispatcher {
   Logger log;
   ArrayList<View> views;
@@ -32,6 +30,7 @@ class Dispatcher {
   }
 }
 
+// ## View
 class View {
   View() {
     dispatcher.register(this);  
@@ -45,6 +44,7 @@ class View {
   }
 }
 
+// ## Event
 class Event {
   String name;
   int value = 0;

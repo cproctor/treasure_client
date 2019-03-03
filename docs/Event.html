@@ -17,17 +17,15 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-0'>#</a>
       </div>
-      <p>Layer: Views
-<em> ------------
-</em> Three classes are defined here: Dispatcher, View, and Event. 
-<em> There will be one dispatcher for the whole program, responsible for 
-</em> coordination. Every part of the user interface should inherit from 
-<em> View; Views register themselves with the dispatcher so that they get
-</em> notified of events. Each View has a respond() method, which 
-* is called whenever there is an event. </p>
+      <p>Three classes are defined here: Dispatcher, View, and Event. 
+There will be one dispatcher for the whole program, responsible for 
+coordination. Every part of the user interface should inherit from 
+View; Views register themselves with the dispatcher so that they get
+notified of events. Each View has a <code>respond()</code> method, which 
+is called whenever there is an event.</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span></span> <span class="o">*/</span></pre></div>
+      <div class="highlight"><pre><span></span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -36,7 +34,7 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-1'>#</a>
       </div>
-      
+      <h2>Dispatcher</h2>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="kd">class</span> <span class="nc">Dispatcher</span> <span class="o">{</span>
@@ -70,7 +68,7 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-2'>#</a>
       </div>
-      
+      <h2>View</h2>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="kd">class</span> <span class="nc">View</span> <span class="o">{</span>
@@ -93,7 +91,7 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-3'>#</a>
       </div>
-      
+      <h2>Event</h2>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="kd">class</span> <span class="nc">Event</span> <span class="o">{</span>

@@ -37,7 +37,7 @@
 // and then turn them all off by changing the settings of your Logger. One of the patterns I've 
 // learned through hard experience is to always use a logger. 
 Logger log;
-// The [Dispatcher](Dispatcher.html) is responsible for coordinating communication at the View layer.
+// The [Dispatcher](Event.html) is responsible for coordinating communication at the View layer.
 // Anybody can send the Dispatcher a message, and it will be communicated to all the Views. This is another
 // useful design pattern you might consider adopting.
 Dispatcher dispatcher;
